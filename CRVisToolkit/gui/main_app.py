@@ -5,6 +5,7 @@ import subprocess
 import shutil
 import csv
 from matplotlib.ticker import MaxNLocator
+import time
  
 from PyQt5.QtCore import Qt, QLocale
 from PyQt5.QtWidgets import (
@@ -240,7 +241,7 @@ class MainApp(QMainWindow):
         # ==========================================================
 
         self.status_label = QLabel(
-            f"Étape : 0 / {len(self.steps_data)}"
+            f"Step : 0 / {len(self.steps_data)}"
         )
 
         self.status_label.setStyleSheet("""
@@ -260,7 +261,7 @@ class MainApp(QMainWindow):
 
         # Bouton mémoriser Home
         self.btn_set_home = QPushButton(
-            "Mémoriser position actuelle"
+            "Save current position"
         )
 
 
@@ -280,7 +281,7 @@ class MainApp(QMainWindow):
 
         # Bouton retour Home
         self.btn_home = QPushButton(
-            "Position Home"
+            "Home Position"
         )
 
         self.btn_home.setStyleSheet("""
@@ -294,7 +295,7 @@ class MainApp(QMainWindow):
         )
 
         self.btn_last_valid = QPushButton(
-            "Dernière position valide"
+            "Last valid position"
         )
 
         self.btn_last_valid.setStyleSheet("""
@@ -394,7 +395,7 @@ class MainApp(QMainWindow):
         # ==========================================================
 
         actuators_group = QGroupBox(
-            "Actionneurs"
+            "Actuators"
         )
 
         actuators_layout = QGridLayout()
@@ -502,7 +503,7 @@ class MainApp(QMainWindow):
         config_layout = QVBoxLayout()
         
         config_layout.addWidget(
-            QLabel("Nombre d'étapes")
+            QLabel("Number of steps")
         )
 
         self.steps_spinbox = QSpinBox()
@@ -521,7 +522,7 @@ class MainApp(QMainWindow):
         )
 
         self.btn_apply = QPushButton(
-            "Appliquer configuration"
+            "Apply configuration"
         )
 
         self.btn_apply.setStyleSheet("""
@@ -539,7 +540,7 @@ class MainApp(QMainWindow):
         )
 
         self.auto_apply_checkbox = QCheckBox(
-            "Appliquer en temps réel"
+            "Apply in real time"
         )
 
         config_layout.addWidget(
@@ -547,7 +548,7 @@ class MainApp(QMainWindow):
         )
 
         self.entrainement_checkbox = QCheckBox(
-            "Activer l'entraînement des chariots"
+            "Activate carriage drive"
         )
 
         self.entrainement_checkbox.setChecked(True)  # Décoché par défaut
@@ -556,7 +557,7 @@ class MainApp(QMainWindow):
         )
 
         self.tip_path_checkbox = QCheckBox(
-            "Afficher la trajectoire de l'organe terminal"
+            "Display the end-effector trajectory"
         )
 
 
@@ -574,7 +575,7 @@ class MainApp(QMainWindow):
 
         # Affichage des chariots du ghost robot
         self.ghost_checkbox = QCheckBox(
-            "Afficher dernière position mémorisé"
+            "Show last saved position (ghost)"
         )
 
         self.ghost_checkbox.setChecked(False)
@@ -588,7 +589,7 @@ class MainApp(QMainWindow):
         # Affichage des chariots
 
         self.chariots_checkbox = QCheckBox(
-            "Afficher les chariots"
+            "View carts"
         )
         self.chariots_checkbox.setChecked(False)
         self.chariots_checkbox.stateChanged.connect(
@@ -597,14 +598,14 @@ class MainApp(QMainWindow):
         config_layout.addWidget(self.chariots_checkbox)
 
         # Affichage robot seul
-        self.robot_only_checkbox = QCheckBox("Mode Robot Seul (Plein Écran)")
+        self.robot_only_checkbox = QCheckBox("Robot-Only Mode (Full Screen)")
         self.robot_only_checkbox.stateChanged.connect(self.update_plots)
         config_layout.addWidget(self.robot_only_checkbox)
 
 
         # Enregistrement GIF du mouvement lorsqu'on appuis sur "appliquer configuration"
         self.record_gif_checkbox = QCheckBox(
-            "Enregistrer l'animation (GIF)"
+            "Save the animation (GIF)"
         )
         self.record_gif_checkbox.setStyleSheet("color: #D32F2F; font-weight: bold;")
         config_layout.addWidget(
@@ -626,7 +627,7 @@ class MainApp(QMainWindow):
         # ==========================================================
 
         graph_group = QGroupBox(
-            "Graphiques et exports"
+            "Charts and exports"
         )
 
         graph_layout = QVBoxLayout()
@@ -649,17 +650,17 @@ class MainApp(QMainWindow):
 
         # Boutons d'export
 
-        btn_exp_ctr = QPushButton("Exporter CTR (3D)")
+        btn_exp_ctr = QPushButton("Export CTR (3D)")
         btn_exp_ctr.setStyleSheet("background-color:#4CAF50; color:white;")
         btn_exp_ctr.clicked.connect(lambda: self.export_svg("ctr"))
         graph_layout.addWidget(btn_exp_ctr)
 
-        btn_exp_graph = QPushButton("Exporter Graph (2D)")
+        btn_exp_graph = QPushButton("Export chart (2D)")
         btn_exp_graph.setStyleSheet("background-color:#4CAF50; color:white;")
         btn_exp_graph.clicked.connect(lambda: self.export_svg("graph"))
         graph_layout.addWidget(btn_exp_graph)
 
-        btn_exp_all = QPushButton("Exporter Tout")
+        btn_exp_all = QPushButton("Export all")
         btn_exp_all.setStyleSheet("background-color:#2196F3; color:white;")
         btn_exp_all.clicked.connect(lambda: self.export_svg("all"))
         graph_layout.addWidget(btn_exp_all)
@@ -742,22 +743,22 @@ class MainApp(QMainWindow):
         # ==========================================================
         # PARAMÈTRES PHYSIQUES (Longueur)
         # ==========================================================
-        params_group = QGroupBox("Paramètres physiques")
+        params_group = QGroupBox("Physical parameters")
         params_layout = QGridLayout()
 
         self.param_inputs = {}
         keys = ['Ux1', 'Ux2', 'Ux3', 'l1', 'l2', 'l3','l_k1', 'l_k2', 'l_k3']
 
         display_names = {
-            'Ux1': "Courbure tube 1",
-            'Ux2': "Courbure tube 2",
-            'Ux3': "Courbure tube 3",
-            'l1': "Longueur totale tube 1",
-            'l2': "Longueur totale tube 2",
-            'l3': "Longueur totale tube 3",
-            'l_k1' : "Longueur courbée tube 1",
-            'l_k2' : "Longueur courbée tube 2",
-            'l_k3' : "Longueur courbée tube 3"
+            'Ux1': "Tube curvature 1",
+            'Ux2': "Tube curvature 2",
+            'Ux3': "Tube curvature 3",
+            'l1': "Total tube length 1",
+            'l2': "Total tube length 2",
+            'l3': "Total tube length 3",
+            'l_k1' : "Curved length tube 1",
+            'l_k2' : "Curved length tube 2",
+            'l_k3' : "Curved length tube 3"
         }
         
         # --- LECTURE DES VALEURS ACTUELLES DU CSV ---
@@ -786,7 +787,7 @@ class MainApp(QMainWindow):
             self.param_inputs[key] = spin
             params_layout.addWidget(spin, i, 1)
 
-        btn_save_params = QPushButton("Enregistrer et Appliquer")
+        btn_save_params = QPushButton("Save and Apply")
         btn_save_params.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
         btn_save_params.clicked.connect(self.save_parameters_to_csv)
         params_layout.addWidget(btn_save_params, len(keys), 0, 1, 2)
@@ -1082,6 +1083,8 @@ class MainApp(QMainWindow):
         print("=== COMPUTE CTR ===")
         print("q =", q_values)
 
+        start_time = time.perf_counter()
+
         try:
 
             result = CTRSolver.run(
@@ -1116,6 +1119,14 @@ class MainApp(QMainWindow):
 
             self.update_plots()
 
+            # ENREGISTRER LE TEMPS DE FIN ET CALCULER LA DIFFÉRENCE
+            end_time = time.perf_counter()
+            generation_time_sec = (end_time - start_time) # Conversion en millisecondes
+
+            if generation_time_sec > 0:
+                fps = 1.0 / generation_time_sec
+                print(f"Temps de génération : {generation_time_sec*1000:.2f} ms | Fréquence : {fps:.1f} Hz")
+
             return True
 
         except Exception as e:
@@ -1137,7 +1148,7 @@ class MainApp(QMainWindow):
 
         n_steps = self.steps_spinbox.value()
 
-        self.status_label.setText(f"Étape : 0 / {n_steps}")
+        self.status_label.setText(f"Step : 0 / {n_steps}")
 
         q_start = np.array(self.current_q)
         q_target = np.array(target_q)
@@ -1392,7 +1403,7 @@ class MainApp(QMainWindow):
 
 
         # CONFIGURATION DES AXES 3D
-        self.ax_robot.set_title("Modélisation CTR en 3D", pad=50, fontsize=12, fontweight='bold')
+        self.ax_robot.set_title("3D modeling of CTR", pad=50, fontsize=12, fontweight='bold')
 
         # DIMENSION DU CADRE (en mètres)
         XY_CADRE = 0.15     # Largeur de la boîte : +/- 8 cm à gauche et à droite
@@ -1463,18 +1474,18 @@ class MainApp(QMainWindow):
             self.ax_plots.grid(True, linestyle=':', alpha=0.6, zorder=2)
 
             if selected_graph != 1:
-                self.ax_plots.set_xlabel("Longueur du robot (m)")
+                self.ax_plots.set_xlabel("Robot length (m)")
                 self.ax_plots.set_xlim([0, length_axis[-1] * 1.05])
                 self.ax_plots.grid(True,linestyle=':',alpha=0.6,zorder=2)
                 self.ax_plots.legend(loc="upper right",fontsize=9,framealpha=0.9)
 
         # Mise à jour du panneau d'information de l'organe terminal
         self.tip_info_label.setText(
-            f"Position de l'organe terminal par rapport à la base :\n"
+            f"Position of the terminal organ relative to the base :\n"
             f"x = {tip_x*1000:.1f} mm\n"
             f"y = {tip_y*1000:.1f} mm\n"
             f"z = {tip_z*1000:.1f} mm\n\n"
-            f"Orientation de l'organe terminal par rapport à la base :\n"
+            f"Orientation of the end effector relative to the base :\n"
             f"X = {tip_angle_x:.1f}°\n"
             f"Y = {tip_angle_y:.1f}°\n"
             f"Z = {tip_angle_z:.1f}°"

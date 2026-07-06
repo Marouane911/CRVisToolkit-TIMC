@@ -69,7 +69,7 @@ def process(self):
         self.prev_q = list(q_corrige)
     else:
         self.prev_q = list(q_corrige)
-    
+
 
     # Affectation finale des variables
     q0, q1, q2 = q_corrige[0], q_corrige[1], q_corrige[2]
@@ -151,21 +151,21 @@ def process(self):
     # camitk.warning(f"Succès du solveur : {result['success']}")
 
     if not result["success"]: # CRASH DU SOLVER (Modèle mathématique)
-        
+
         camitk.warning(f"{str(result)} : restauration des anciens paramètres")
-        
+
         # On réécrit immédiatement l'ancienne sauvegarde dans le CSV actuel car le CSV acuel est cassé
         with open(csv_path, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerow(backup_row)
-        
+
         for i in range(6):
             self.setParameterValue(f"Q{i}", float(self.last_valid_q[i])) # restauration des paramètres de translation et rotation
 
         # Restauration de la détection de chariot pour le prochain tour
         self.prev_q = list(self.last_valid_q[:3])
-        
+
         return False
 
     # camitk.warning("Calcul réussi, mise à jour du mesh ...")
@@ -224,7 +224,7 @@ def process(self):
     transform_filter.SetInputData(polydata)
     transform_filter.SetTransform(transform)
     transform_filter.Update()
-    
+
     # Récupération du maillage après ses transformations de translation et rotation globale
     polydata_transforme = transform_filter.GetOutput()
 
@@ -252,20 +252,20 @@ def process(self):
         image_component = target.as_type("ImageComponent")
         if image_component is not None:
             image = image_component
-    
+
     # Vérification
     # camitk.warning(f"mesh = {mesh}")
     # camitk.warning(f"image = {image}")
-    
-    
+
+
     # if image is not None:
-        
+
     #     # 1. Sécurité pour créer un seul plan durant la session pour éviter de générer un plan par "apply"
     #     if not hasattr(self, "tipSlice"):
     #         self.tipSlice = camitk.ObliqueSliceComponent(image)
     #         self.tipSlice.setPropertyValue("Relative Rotation", True)
     #         self.refreshApplication()
-        
+
     #     self.tipSlice.setPropertyValue(
     #         "Translation",
     #         (
@@ -306,22 +306,65 @@ def process(self):
         if f.getName() == "vtk output"
     )
 
+    world_frame = camitk.TransformationManager.getWorldFrame()
+
+
     data_frame = next(
-        f for f in frames
-        if f.getName().endswith("(data)")
+        (
+            f for f in frames
+            if f.getName().endswith("(data)")
+        ),
+        None
     )
 
-    robot_data_exists = any(
-        (T.getFrom() == robot_frame and T.getTo() == data_frame) or
-        (T.getFrom() == data_frame and T.getTo() == robot_frame)
-        for T in camitk.TransformationManager.getTransformations()
-    )
+    if data_frame is not None:
+        reference_frame = data_frame
 
-    if not robot_data_exists:
-        camitk.TransformationManager.addTransformation(
-            robot_frame,
-            data_frame
+    else:
+        reference_frame = next(
+            (
+                f for f in frames
+                if f != robot_frame
+                and f != world_frame
+                and not f.getName().endswith("(main)")
+                and not f.getName().endswith("(arbitrary)")
+            ),
+            world_frame
         )
+
+
+    camitk.warning(f"Reference frame = {reference_frame.getName()}")
+
+    if reference_frame != world_frame:
+
+        relation_exists = any(
+            T.getFrom() == robot_frame
+            and T.getTo() == reference_frame
+            for T in camitk.TransformationManager.getTransformations()
+        )
+
+        if not relation_exists:
+            camitk.TransformationManager.addTransformation(
+                robot_frame,
+                reference_frame
+            )
+            camitk.TransformationManager.removeTransformation(
+                robot_frame,
+                world_frame
+            )
+        
+        reference_world_exists = any(
+        T.getFrom() == reference_frame
+        and T.getTo() == world_frame
+        for T in camitk.TransformationManager.getTransformations()
+        )
+
+        if not reference_world_exists:
+            camitk.TransformationManager.addTransformation(
+                reference_frame,
+                world_frame
+            )
+
 
     rotation = Rotation.from_euler(
         'zyx',
@@ -329,20 +372,21 @@ def process(self):
         degrees=True
     )
 
-    T_robot_data = np.eye(4)
+    T_robot_reference = np.eye(4)
 
-    T_robot_data[:3, :3] = rotation.as_matrix()
+    T_robot_reference[:3, :3] = rotation.as_matrix()
 
-    T_robot_data[:3, 3] = [
+    T_robot_reference[:3, 3] = [
         float(base_x),
         float(base_y),
         float(base_z)
     ]
 
+
     camitk.TransformationManager.updateTransformation(
         robot_frame,
-        data_frame,
-        T_robot_data.tolist()
+        reference_frame,
+        T_robot_reference.tolist()
     )
 
     camitk.refresh()

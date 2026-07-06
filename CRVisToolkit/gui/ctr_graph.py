@@ -314,7 +314,7 @@ class CTRGraphs:
         #     self.ax_plots.axvline(x=l_end_t1, color='green', linestyle='--', alpha=0.7, label="End T1 (Tip)")
  
  
-        self.ax_plots.set_title("Angles de torsion des tubes le long du CTR", fontsize=11, fontweight='bold')
+        self.ax_plots.set_title("Torsion angles of the tubes along the CTR", fontsize=11, fontweight='bold')
         self.ax_plots.set_ylabel("Twist angle (rad)", labelpad=10)
  
         # Limites dynamiques
@@ -668,7 +668,7 @@ class CTRGraphs:
         #     self.ax_plots.axvline(x=l_end_t1, color='green', linestyle='--', alpha=0.7, label="End T1 (Tip)")
 
 
-        self.ax_plots.set_title("Angles de torsion des tubes le long du CTR", fontsize=11, fontweight='bold')
+        self.ax_plots.set_title("Torsion angles of the tubes along the CTR", fontsize=11, fontweight='bold')
         self.ax_plots.set_ylabel("Twist angle (rad)", labelpad=10)
 
         # Limites dynamiques
