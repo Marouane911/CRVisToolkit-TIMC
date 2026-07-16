@@ -352,7 +352,7 @@ class CTRGraphs:
         )
  
         self.ax_plots.annotate(
-            f"{theta_2[data.end_mid-1]:.4f} rad",
+            f"{theta_2[data.end_mid-1]:.1f} rad",
             (
                 data.length_axis[data.end_mid-1],
                 theta_2[data.end_mid-1]
@@ -363,7 +363,7 @@ class CTRGraphs:
         )
  
         self.ax_plots.annotate(
-            f"{theta_3[data.end_ext-1]:.4f} rad",
+            f"{theta_3[data.end_ext-1]:.1f} rad",
             (
                 data.length_axis[data.end_ext-1],
                 theta_3[data.end_ext-1]
@@ -706,7 +706,7 @@ class CTRGraphs:
         )
 
         self.ax_plots.annotate(
-            f"{theta_2[data.end_mid-1]:.4f} rad",
+            f"{theta_2[data.end_mid-1]:.1f} rad",
             (
                 data.length_axis[data.end_mid-1],
                 theta_2[data.end_mid-1]
@@ -717,7 +717,7 @@ class CTRGraphs:
         )
 
         self.ax_plots.annotate(
-            f"{theta_3[data.end_ext-1]:.4f} rad",
+            f"{theta_3[data.end_ext-1]:.1f} rad",
             (
                 data.length_axis[data.end_ext-1],
                 theta_3[data.end_ext-1]

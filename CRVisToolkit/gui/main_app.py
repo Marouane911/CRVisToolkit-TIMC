@@ -1481,7 +1481,7 @@ class MainApp(QMainWindow):
 
         # Mise à jour du panneau d'information de l'organe terminal
         self.tip_info_label.setText(
-            f"Position of the terminal organ relative to the base :\n"
+            f"Position of the end effector relative to the base :\n"
             f"x = {tip_x*1000:.1f} mm\n"
             f"y = {tip_y*1000:.1f} mm\n"
             f"z = {tip_z*1000:.1f} mm\n\n"
@@ -1525,7 +1525,7 @@ class MainApp(QMainWindow):
             
             # Masquer complètement l'axe Y et affiner l'axe X
             ax_chariots.get_yaxis().set_visible(False)
-            ax_chariots.set_xlabel("Espace de translation des tubes (mm)", fontsize=10, fontweight='bold', color='#333333')
+            ax_chariots.set_xlabel("Tube displacement space (mm)", fontsize=10, fontweight='bold', color='#333333')
             ax_chariots.spines['top'].set_visible(False)
             ax_chariots.spines['right'].set_visible(False)
             ax_chariots.spines['left'].set_visible(False)
