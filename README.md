@@ -15,13 +15,9 @@ Built on top of the open-source CTR solver developed by the TIMC-GMCAO team, thi
 
 The objective is to facilitate the study and development of continuum robots for research, education, and computer-assisted intervention applications.
 
-```markdown
-## Academic Context
-
 This project was developed during a two-month research internship at the TIMC laboratory, within the GMCAO team.
 
 The objective was to provide an interactive environment for the visualization, analysis, and navigation of Concentric Tube Robots (CTR), while facilitating their integration into medical imaging workflows through CamiTK.
-```
 
 ## Screenshots
 
@@ -40,7 +36,6 @@ The objective was to provide an interactive environment for the visualization, a
 ### Camitk Extension
 
 ![Camitk Extension](images/Camitk_extension.png)
-
 
 ## Project Components
 
@@ -74,22 +69,22 @@ This extension aims to facilitate the use of continuum robots in computer-assist
 
 ### Interactive Control
 
-* Real-time modification of tube rotations and translations
-* Direct control of robot configuration
-* Instant visualization of robot shape evolution
+- Real-time modification of tube rotations and translations
+- Direct control of robot configuration
+- Instant visualization of robot shape evolution
 
 ### 3D Visualization
 
-* Interactive 3D rendering of the robot backbone
-* Visualization of individual tubes
-* Camera navigation and inspection tools
-* Curvature highlighting
+- Interactive 3D rendering of the robot backbone
+- Visualization of individual tubes
+- Camera navigation and inspection tools
+- Curvature highlighting
 
 ### VTK Integration
 
-* Generation of VTK objects
-* Export for scientific visualization tools
-* Compatibility with CamiTK and VTK-based workflows
+- Generation of VTK objects
+- Export for scientific visualization tools
+- Compatibility with CamiTK and VTK-based workflows
 
 ### CamiTK Integration
 
@@ -100,30 +95,29 @@ This extension aims to facilitate the use of continuum robots in computer-assist
 
 ### Scientific Analysis
 
-* Position plots
-* Orientation plots
-* end-effector history
-* Accumulated relative twist from base
-* Curvature analysis
-* Tube configuration visualization
+- Position plots
+- Orientation plots
+- end-effector history
+- Accumulated relative twist from base
+- Curvature analysis
+- Tube configuration visualization
 
 ### Data Processing
 
-* Loading robot parameters from CSV files
-* Communication with the C++ solver
-* Automatic extraction of simulation results
-* Numerical post-processing
-
+- Loading robot parameters from CSV files
+- Communication with the C++ solver
+- Automatic extraction of simulation results
+- Numerical post-processing
 
 ## Installation
 
 ### Requirements
 
-* Ubuntu 24.04 LTS
-* Python 3.11+
-* CMake
-* GCC / G++
-* Git
+- Ubuntu 24.04 LTS
+- Python 3.11+
+- CMake
+- GCC / G++
+- Git
 
 ### Clone Repository
 
@@ -189,7 +183,6 @@ python Toolkit/gui/main_app.py
 
 Depending on the repository version.
 
-
 ### CamiTK Extension
 
 Launch the graphical interface:
@@ -207,7 +200,6 @@ python Toolkit/gui/camitk.py
 Depending on the repository version.
 
 ---
-
 
 ## Workflow
 
@@ -227,11 +219,11 @@ Concentric Tube Robots (CTR) are continuum robots composed of several pre-curved
 
 The robot shape is determined by:
 
-* Tube geometry
-* Curvature profiles
-* Elastic properties
-* Relative tube rotations
-* Relative tube translations
+- Tube geometry
+- Curvature profiles
+- Elastic properties
+- Relative tube rotations
+- Relative tube translations
 
 The solver computes the resulting equilibrium configuration and reconstructs the robot backbone in three-dimensional space.
 
@@ -266,29 +258,28 @@ Continuum-Robot-3D/
 └── README.md
 ```
 
-
 ## Applications
 
 Possible applications include:
 
-* Medical robotics
-* Surgical navigation
-* Robot design studies
-* Continuum robot research
-* Educational demonstrations
-* Kinematic analysis
+- Medical robotics
+- Surgical navigation
+- Robot design studies
+- Continuum robot research
+- Educational demonstrations
+- Kinematic analysis
 
 ---
 
 ## Future Improvements
 
-* Real-time simulation
-* GPU acceleration
-* Improved mesh generation
-* ROS integration
-* Multi-robot support
-* Advanced path planning
-* Improved CamiTK interoperability
+- Real-time simulation
+- GPU acceleration
+- Improved mesh generation
+- ROS integration
+- Multi-robot support
+- Advanced path planning
+- Improved CamiTK interoperability
 
 ---
 
@@ -297,7 +288,7 @@ Possible applications include:
 This project builds upon the open-source repository **Modeling-and-Control-of-Concentric-Tube-Continuum-Robots**, developed by the TIMC-GMCAO team for the modeling and control of Concentric Tube Continuum Robots (CTCR). The original solver is associated with the publication:
 
 > Quentin Boyer, Sandrine Voros, Pierre Roux, François Marionnet, Kanty Rabenorosoa, and M. Taha Chikhaoui,
-> *On High Performance Control of Concentric Tube Continuum Robots through Parsimonious Calibration*,
+> _On High Performance Control of Concentric Tube Continuum Robots through Parsimonious Calibration_,
 > IEEE Robotics and Automation Letters (RA-L), 2024.
 
 This repository extends the original project by providing:
@@ -310,7 +301,6 @@ This repository extends the original project by providing:
 
 ---
 
-
 ## Acknowledgements
 
 This project was developed during a two-month research internship at the TIMC laboratory (UMR 5525), within the GMCAO (Computer-Assisted Medical Interventions) team.
@@ -319,8 +309,7 @@ I would like to sincerely thank the entire GMCAO team for their warm welcome and
 
 I am especially grateful to **Taha Chikhaoui** and **Joseph Massin** for their supervision, guidance, technical expertise, and continuous support during the development of this project.
 
-Their advice and encouragement were invaluable to the successful completion of this work.
----
+## Their advice and encouragement were invaluable to the successful completion of this work.
 
 ## Author
 
