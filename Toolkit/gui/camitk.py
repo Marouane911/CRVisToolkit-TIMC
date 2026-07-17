@@ -15,14 +15,13 @@ root_toolkit = os.path.dirname(current_dir)
 python_dir = os.path.join(root_toolkit, "python")
 project_parent = os.path.dirname(root_toolkit)
 
-# temp_params_path_abs = os.path.join(
-#     python_dir,
-#     "parameters_temp.csv"
-# )
 
-
-temp_params_path_abs = "/home/ketebm/Projet/Continuum-Robot-3D/Modeling-and-Control-of-Concentric-Tube-Continuum-Robots/parameters/parameters.csv"
-
+temp_params_path_abs = os.path.join(
+    project_parent,
+    "Modeling-and-Control-of-Concentric-Tube-Continuum-Robots",
+    "parameters",
+    "parameters.csv"
+)
 
 rOut1, rOut2, rOut3 = 0.000762, 0.000900, 0.001175  # Valeurs de secours
 if os.path.exists(temp_params_path_abs):

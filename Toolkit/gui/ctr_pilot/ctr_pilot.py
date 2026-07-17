@@ -1,3 +1,7 @@
+from pathlib import Path
+ROOT_DIR = Path(__file__).resolve().parents[3]
+print(ROOT_DIR)
+
 import camitk
 import sys
 import csv
@@ -5,7 +9,10 @@ import vtk
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-sys.path.append("/home/ketebm/Projet/Continuum-Robot-3D/CRVisToolkit/gui")
+GUI_DIR = ROOT_DIR / "Toolkit" / "gui"
+
+if str(GUI_DIR) not in sys.path:
+    sys.path.append(str(GUI_DIR))
 
 from ctr_solver import CTRSolver
 from ctr_loader import CTRLoader
@@ -101,8 +108,10 @@ def process(self):
 
     ## Écriture des nouveaux paramètres dans parameters_tmp.csv
     csv_path = (
-    "/home/ketebm/Projet/Continuum-Robot-3D/"
-    "CRVisToolkit/python/parameters_temp.csv"
+        ROOT_DIR
+        / "Toolkit"
+        / "python"
+        / "parameters_temp.csv"
     )
 
     # Sauvegarde sur le disque
@@ -143,7 +152,7 @@ def process(self):
     ###### fin de l'écriture
 
     result = CTRSolver.run(
-        root_toolkit="/home/ketebm/Projet/Continuum-Robot-3D/CRVisToolkit",
+        root_toolkit=str(ROOT_DIR / "Toolkit"),
         q_values=[q0, q1, q2, q3, q4, q5],
         params_path=csv_path
     )
@@ -172,11 +181,14 @@ def process(self):
     # Si le calcul a réussi, on met à jour notre référence
     self.last_valid_q = [q0, q1, q2, q3, q4, q5]
 
-    steps = CTRLoader.load(
-        "/home/ketebm/Projet/Continuum-Robot-3D/"
-        "Modeling-and-Control-of-Concentric-Tube-Continuum-Robots/"
-        "build/robot_backbone.txt"
+    backbone_path = (
+        ROOT_DIR
+        / "Modeling-and-Control-of-Concentric-Tube-Continuum-Robots"
+        / "build"
+        / "robot_backbone.txt"
     )
+
+    steps = CTRLoader.load(str(backbone_path))
 
     if len(steps) == 0:
         # camitk.warning("No backbone data loaded")
@@ -202,22 +214,8 @@ def process(self):
         "/tmp/robot_centerline.vtk"
     )
 
-    # camitk.warning("EXPORT FINI")
-
-    # camitk.warning("AFTER EXPORT")
-
-    # camitk.warning(f"mesh points = {polydata.GetNumberOfPoints()}")
-
-    # camitk.warning(f"mesh polys = {polydata.GetNumberOfPolys()}")
-
     # Transformation Globale (translation et rotation)
     transform = vtk.vtkTransform()
-
-    # transform.Translate(base_x, base_y, base_z)
-
-    # transform.RotateZ(rot_z)
-    # transform.RotateY(rot_y)
-    # transform.RotateX(rot_x)
 
     # Application de la transformation sur le maillage 3D
     transform_filter = vtk.vtkTransformPolyDataFilter() # transformer les coordonnées des points
@@ -252,48 +250,6 @@ def process(self):
         image_component = target.as_type("ImageComponent")
         if image_component is not None:
             image = image_component
-
-    # Vérification
-    # camitk.warning(f"mesh = {mesh}")
-    # camitk.warning(f"image = {image}")
-
-
-    # if image is not None:
-
-    #     # 1. Sécurité pour créer un seul plan durant la session pour éviter de générer un plan par "apply"
-    #     if not hasattr(self, "tipSlice"):
-    #         self.tipSlice = camitk.ObliqueSliceComponent(image)
-    #         self.tipSlice.setPropertyValue("Relative Rotation", True)
-    #         self.refreshApplication()
-
-    #     self.tipSlice.setPropertyValue(
-    #         "Translation",
-    #         (
-    #             float(P_tip[0]),
-    #             float(P_tip[1]),
-    #             float(P_tip[2])
-    #         )
-    #     )
-
-    #     self.tipSlice.setPropertyValue(
-    #         "Rotation",
-    #         (60.0, 0.0, 0.0)
-    #     )
-
-
-    # old_points = mesh.getPointSetAsNumpy()
-
-    # camitk.warning(
-    #     f"OLD={old_points.shape[0]} NEW={points.shape[0]}"
-    # )
-
-    # camitk.warning(
-    #     f"NEW_POLYS={polys.shape[0]}"
-    # )
-
-    # if old_points.shape[0] != points.shape[0]:
-    #     camitk.warning("Topology changed")
-    #     return True
 
     mesh.replacePointSet(points)
 
@@ -333,7 +289,7 @@ def process(self):
         )
 
 
-    camitk.warning(f"Reference frame = {reference_frame.getName()}")
+    # camitk.warning(f"Reference frame = {reference_frame.getName()}")
 
     if reference_frame != world_frame:
 

@@ -34,9 +34,9 @@ from ctr_vtk_export import CTRVTKExporter
 
 
 # --- GESTION DU REPERTOIRE DE PYTHON (Dossier frère) ---
-current_dir = os.path.dirname(os.path.abspath(__file__)) # ~/CRVisToolkit/gui
-root_toolkit = os.path.dirname(current_dir)              # ~/CRVisToolkit
-python_dir = os.path.join(root_toolkit, "python")        # ~/CRVisToolkit/python
+current_dir = os.path.dirname(os.path.abspath(__file__)) # ~/Toolkit/gui
+root_toolkit = os.path.dirname(current_dir)              # ~/Toolkit
+python_dir = os.path.join(root_toolkit, "python")        # ~/Toolkit/python
 
 if python_dir not in sys.path:
     sys.path.append(python_dir)
